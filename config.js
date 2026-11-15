@@ -1,2 +1,5 @@
-// Public values by design (protected by Row Level Security). NEVER put the service_role key here.
-window.KHOZ={url:'https://YOUR-PROJECT.supabase.co',key:'YOUR_SUPABASE_ANON_KEY'};
+
+window.KHOZ = {
+  url: 'https://fqxrcjkciwkahgdgoetb.supabase.co/rest/v1/',
+  key: 'sb_publishable_s6CrAOm09F2J2fEM9FdILg_0RBZ9sIH'
+};

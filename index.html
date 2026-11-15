@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+\1\n<meta name="description" content="خذ و خل — لعبة اختيارات بنمط بكسل: خذ 3 من 6 بوسترات مغبشة">
+<title>خذ و خل</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Cairo:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#1a1033;--pn:#2a1b52;--ink:#0b0618;--y:#ffd93d;--g:#4cf08a;--r:#ff4d6d;--b:#4dc9ff;--tx:#fff7e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:'Press Start 2P','Cairo',monospace;font-weight:900;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(#ffffff0d 2px,transparent 2px) 0 0/100% 32px,linear-gradient(90deg,#ffffff0d 2px,transparent 2px) 0 0/32px 100%;animation:gridm 2s steps(8) infinite;z-index:-1}
+@keyframes gridm{to{background-position:0 32px,32px 0}}
+body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(#0000 0 3px,#0003 3px 4px);pointer-events:none;z-index:99}
+.star{position:fixed;top:-10px;width:8px;height:8px;background:var(--y);opacity:.5;z-index:-1;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh)}}
+#app{max-width:900px;margin:0 auto;padding:20px 14px 90px;text-align:center}
+.title{font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(64px,18vw,140px);margin:10px 0;line-height:1.1;color:var(--y);text-shadow:4px 4px 0 var(--r),8px 8px 0 var(--ink);animation:bob 1s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.sub1{font-size:12px;color:var(--b);animation:blink 1s steps(2) infinite;margin-top:12vh}
+.sub2{font-size:11px;color:var(--g);margin-bottom:34px;line-height:1.8}
+@keyframes blink{50%{opacity:0}}
+h2{font-family:'Cairo',sans-serif;font-size:28px;color:var(--y);text-shadow:3px 3px 0 var(--ink);margin:14px 0 22px}
+.btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.btn,.tile{font-family:inherit;font-weight:900;font-size:20px;color:var(--ink);background:var(--y);border:4px solid var(--ink);padding:16px 26px;cursor:pointer;box-shadow:0 6px 0 var(--ink),inset -4px -4px 0 #0004,inset 4px 4px 0 #fff5;transition:transform .08s steps(2)}
+.btn:hover,.tile:hover{transform:translateY(-3px)}
+.btn:active,.tile:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink),inset -4px -4px 0 #0004,inset 4px 4px 0 #fff5}
+.btn.g{background:var(--g)}.btn.r{background:var(--r)}.btn.b{background:var(--b)}
+.btn small{display:block;font:10px 'Press Start 2P';margin-top:8px}
+.btn:disabled{opacity:.4;pointer-events:none}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.tile{display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--pn);color:var(--tx);font-size:20px}
+.tile .ic{font-size:44px;filter:drop-shadow(3px 3px 0 #000)}
+.tile small{font:9px 'Press Start 2P';color:var(--b)}
+.tile.dis{opacity:.4}
+.tile{animation:pop .4s steps(4) both}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.back{margin-top:30px}
+.hud{display:flex;justify-content:space-between;font-size:13px;margin-bottom:18px;color:var(--b);font-family:'Cairo'}
+.hud b{color:var(--y)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:620px;margin:0 auto}
+.grid.four{grid-template-columns:repeat(3,1fr)}
+.card{position:relative;aspect-ratio:3/4;cursor:pointer;border:4px solid var(--ink);background:var(--pn);box-shadow:0 6px 0 var(--ink);transition:transform .1s steps(2);animation:pop .4s steps(4) both;overflow:hidden}
+.card:hover{transform:translateY(-4px)}
+.art-w{position:absolute;inset:0;overflow:hidden;transition:filter .6s steps(6)}
+.s0 .art-w{filter:blur(42px) saturate(.3) brightness(.65) contrast(.8)}
+.s0 .art{transform:scale(1.4)}
+.art,.art img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{display:grid;place-items:center;background:repeating-conic-gradient(hsl(var(--h) 60% 42%) 0 25%,hsl(var(--h) 60% 33%) 0 50%) 0 0/24px 24px}
+.ph b{font:900 clamp(36px,10vw,72px) 'Cairo';text-shadow:4px 4px 0 #000}
+.s0 .ph b{opacity:0}
+.q{display:none;position:absolute;inset:0;place-items:center;font:36px 'Press Start 2P';color:var(--y);text-shadow:4px 4px 0 #000;animation:blink 1.2s steps(2) infinite}
+.s0 .q{display:grid}
+.nm{position:absolute;bottom:0;left:0;right:0;background:#0b0618dd;font:900 clamp(11px,3vw,15px) 'Cairo';padding:6px 4px;transition:opacity .3s}
+.s0 .nm{opacity:0}
+.s1{animation:shake .4s steps(4)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.s2{border-color:var(--g);box-shadow:0 0 0 4px var(--g),0 8px 0 4px var(--ink)}
+.s3{border-color:var(--r);box-shadow:0 0 0 4px var(--r),0 8px 0 4px var(--ink)}
+.s3 .art-w{filter:grayscale(1) brightness(.6)}
+.s2::after,.s3::after{position:absolute;top:8px;right:8px;font:900 15px 'Cairo';padding:3px 10px;border:3px solid var(--ink);transform:rotate(-8deg);animation:stamp .3s steps(3)}
+.s2::after{content:'خذ';background:var(--g);color:var(--ink)}
+.s3::after{content:'خل';background:var(--r);color:var(--ink)}
+@keyframes stamp{from{transform:scale(3) rotate(-8deg);opacity:0}}
+.sel{border-color:var(--y);box-shadow:0 0 0 5px var(--y),0 8px 0 5px var(--ink);transform:translateY(-6px)}
+.own{position:absolute;top:6px;left:6px;font:8px 'Press Start 2P';background:var(--b);color:var(--ink);padding:4px;z-index:2}
+.dec{min-height:130px;margin-top:26px}
+.dec .big{font:900 26px 'Cairo';color:var(--y);text-shadow:3px 3px 0 var(--ink);margin-bottom:14px;animation:pop .3s steps(3)}
+.hint{font:600 14px 'Cairo';color:var(--g);min-height:24px;margin-top:20px}
+.sortrow{margin:10px 0 24px;padding:14px;border:4px dashed}
+.sortrow.t{border-color:var(--g)}.sortrow.l{border-color:var(--r)}
+.sortrow h3{margin:0 0 12px;font:900 20px 'Cairo'}
+.sortrow .grid{max-width:none}
+.sortrow .card{animation:drop .6s steps(6) both}
+@keyframes drop{from{transform:translateY(-80vh) rotate(25deg);opacity:0}}
+.panel{background:var(--pn);border:4px solid var(--ink);box-shadow:0 6px 0 var(--ink);padding:16px;margin:16px 0;text-align:right}
+.panel h3{font:900 18px 'Cairo';color:var(--y);margin:0 0 12px}
+.row{display:flex;gap:8px;margin:8px 0;align-items:center}
+.row.on{background:#ffffff14}
+input,textarea{font:600 15px 'Cairo';background:var(--ink);color:var(--tx);border:3px solid #ffffff33;padding:8px;min-width:0;flex:1}
+input.s{flex:0 0 56px;text-align:center}
+.mini{font:900 14px 'Cairo';background:var(--b);color:var(--ink);border:3px solid var(--ink);padding:6px 12px;cursor:pointer}
+.mini.x{background:var(--r)}
+.ag{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+.ai{background:var(--ink);padding:6px}
+.ai img,.ai .ph{width:100%;aspect-ratio:3/4;object-fit:cover;display:grid}
+.ai input{width:100%;margin:6px 0;font-size:13px}
+.toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--r);color:var(--ink);font:900 15px 'Cairo';padding:12px 20px;border:4px solid var(--ink);z-index:100;animation:pop .2s steps(2)}
+.cf{position:fixed;top:-12px;width:10px;height:10px;z-index:50;animation:fall 2.5s steps(14) forwards}
+.win{max-width:260px;margin:0 auto 20px}
+#nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));right:12px;display:flex;gap:8px;z-index:98}
+.nb{width:42px;height:42px;padding:8px;background:var(--pn);color:var(--y);border:3px solid var(--ink);cursor:pointer;box-shadow:0 4px 0 var(--ink),inset -3px -3px 0 #0004,inset 3px 3px 0 #fff3;display:grid;place-items:center}
+.nb svg{width:100%;height:100%}
+.nb:hover{background:#3a2870}
+.nb:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:18px}.boards.one{grid-template-columns:1fr;max-width:620px;margin:0 auto}
+.bd{padding:10px;border:4px solid transparent;transition:opacity .3s}.bd.act{border-color:var(--y);background:#ffd93d14}.bd.off{opacity:.5;pointer-events:none}
+.tb{display:inline-block;font:900 20px 'Cairo';background:var(--y);color:var(--ink);border:4px solid var(--ink);padding:6px 18px;box-shadow:0 5px 0 var(--ink);animation:pop .3s steps(3)}
+@media(max-width:700px){.boards{grid-template-columns:1fr}.bd .grid{max-width:340px}}
+@media(max-width:520px){.grid{gap:10px}.btn{font-size:17px;padding:14px 18px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="nav"></div>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const uid=()=>Math.random().toString(36).slice(2,8);
+let muted=false;try{muted=localStorage.getItem('khoz_m')=='1'}catch(e){}
+let AC;const beep=(f=440,d=.08,t='square')=>{if(muted)return;try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.value=f;g.gain.value=.04;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}};
+const toast=m=>{document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
+for(let i=0;i<22;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;animation-duration:${6+Math.random()*10}s;animation-delay:-${Math.random()*10}s;background:${['#ffd93d','#4dc9ff','#ff4d6d','#4cf08a'][i%4]}`;document.body.appendChild(s)}
+
+/* ---------- data ---------- */
+const mk=(n,i,subs)=>({id:uid(),n,i,subs:Object.entries(subs).map(([k,v])=>({id:uid(),n:k,items:v.split('|').map(x=>({id:uid(),n:x}))}))});
+const DEF=()=>[
+mk('ألعاب','🎮',{'ألعاب تختيم':'God of War|Zelda: BOTW|The Last of Us|Elden Ring|Hades|Skyrim|Red Dead 2|The Witcher 3|Spider-Man|Hollow Knight','شخصيات نينتندو':'Mario|Link|Pikachu|Kirby|Samus|Donkey Kong|Yoshi|Fox|Luigi|Bowser'}),
+mk('كرة قدم','⚽',{'لاعبين':'ميسي|رونالدو|نيمار|مبابي|هالاند|صلاح|بنزيما|مودريتش|دي بروين|فينيسيوس'}),
+mk('أنمي','🍥',{'شخصيات':'غوكو|لوفي|ناروتو|زورو|لايت|ليفاي|غوجو|إيرين|تانجيرو|إيتشيغو'})];
+let D=DEF();
+async function loadData(){const c=window.KHOZ||{};if(!c.url||!c.key||c.url.includes('YOUR'))return;try{const r=await fetch(c.url+'/rest/v1/categories?select=id,name,icon,sort,subcategories(id,name,sort,items(id,name,image_url))&order=sort',{headers:{apikey:c.key,Authorization:'Bearer '+c.key}});if(!r.ok)return;const d=(await r.json()).map(x=>({id:x.id,n:x.name,i:x.icon,subs:(x.subcategories||[]).sort((a,b)=>a.sort-b.sort).map(y=>({id:y.id,n:y.name,items:(y.items||[]).map(z=>({id:z.id,n:z.name,img:z.image_url}))}))})).filter(x=>x.subs.length);if(d.length)D=d}catch(e){}}
+let G={mode:'solo'};
+const hue=s=>Math.abs([...s].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7))%360;
+const art=it=>it.img?`<div class="art"><img src="${it.img}" alt=""></div>`:`<div class="art ph" style="--h:${hue(it.n)}"><b>${esc([...it.n][0]||'?')}</b></div>`;
+const card=(it,i,extra='',st=it.st||0,k=0)=>`<div class="card s${st} ${extra}" data-a="card" data-k="${k}" data-i="${i}" style="animation-delay:${i*.08}s">${it.o?`<span class="own">P${it.o}</span>`:''}<div class="art-w">${art(it)}</div><div class="q">?</div><div class="nm">${esc(it.n)}</div></div>`;
+const back=a=>`<div class="back"><button class="btn b" data-a="${a}">رجوع ↩</button></div>`;
+
+/* ---------- screens ---------- */
+let NV={};
+const PX={h:['...##...','..####..','.######.','########','.######.','.##..##.','.##..##.','.##..##.'],b:['...#....','....#...','.....#..','########','########','.....#..','....#...','...#....'],on:['...#....','..##..#.','####.#.#','####.#.#','####.#.#','..##..#.','...#....','........'],off:['...#....','..##....','####.#.#','####..#.','####.#.#','..##....','...#....','........']};
+const px=m=>`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor">${m.map((r,y)=>[...r].map((c,x)=>c=='#'?`<rect x="${x}" y="${y}" width="1" height="1"/>`:'').join('')).join('')}</svg>`;
+function drawNav(full){const n=$('#nav');n.innerHTML=(full?`<button class="nb" data-n="h" aria-label="home">${px(PX.h)}</button><button class="nb" data-n="b" aria-label="back">${px(PX.b)}</button>`:'')+`<button class="nb" data-n="m" aria-label="sound">${px(muted?PX.off:PX.on)}</button>`}
+function setNav(b){NV={b,full:!!b};drawNav(!!b)}
+$('#nav').addEventListener('click',e=>{const t=e.target.closest('[data-n]');if(!t)return;const k=t.dataset.n;if(k=='m'){muted=!muted;try{localStorage.setItem('khoz_m',muted?1:0)}catch(e){}drawNav(NV.full);return}G.M=null;k=='h'?home():NV.b()});
+function home(){setNav();app.innerHTML=`<div class="sub1">PRESS START</div><h1 class="title">خذ و خل</h1><div class="sub2">TAKE IT OR LEAVE IT</div><div class="btns"><button class="btn g" data-a="mode" data-m="solo">لعب فردي<small>1 PLAYER</small></button><button class="btn r" data-a="mode" data-m="duo">لعب ثنائي<small>2 PLAYERS</small></button></div>`}
+function cats(){setNav(home);app.innerHTML=`<h2>اختر الكاتجوري</h2><div class="list">${D.map((c,i)=>`<button class="tile" data-a="cat" data-i="${i}" style="animation-delay:${i*.07}s"><span class="ic">${esc(c.i)}</span>${esc(c.n)}<small>${c.subs.length} فروع</small></button>`).join('')||'<p>ما فيه كاتجوريات، أضفها من ADMIN</p>'}</div>${back('home')}`}
+function subs(){setNav(cats);const c=D[G.c];app.innerHTML=`<h2>${esc(c.i)} ${esc(c.n)}</h2><div class="list">${c.subs.map((s,i)=>`<button class="tile ${s.items.length<6?'dis':''}" data-a="sub" data-i="${i}" style="animation-delay:${i*.07}s">${esc(s.n)}<small>${s.items.length} عنصر</small></button>`).join('')||'<p>ما فيه فروع</p>'}</div>${back('cats')}`}
+function begin(){const sub=D[G.c].subs[G.s];if(sub.items.length<6)return toast('الفرع لازم فيه 6 عناصر على الأقل');const pool=sh(sub.items),n=G.mode==='duo'?2:1;G.pl=[];for(let p=0;p<n;p++){const pick=pool.length>=12&&n==2?pool.slice(p*6,p*6+6):sh(pool).slice(0,6);G.pl.push(pick.map(x=>({...x,st:0,o:n==2?p+1:0})))}G.p=0;pick()}
+function pick(){G.t=0;G.busy=0;setNav(subs,0,0,begin);const one=G.pl.length==1;app.innerHTML=`<div class="turn" id="turn"></div><div class="dec" id="dec"></div><div class="boards ${one?'one':''}">${G.pl.map((p,k)=>`<div class="bd" id="b${k}"><div class="hud"><span>${one?'خذ 3 من 6':'اللاعب '+(k+1)}</span><span>أخذ <b class="tk">0</b>/3</span></div><div class="grid">${p.map((x,i)=>card(x,i,'',0,k)).join('')}</div></div>`).join('')}</div>`;turnUI()}
+function turnUI(msg){const one=G.pl.length==1;$('#turn').innerHTML=one?'':`<span class="tb">دور اللاعب ${G.t+1} 👇</span>`;G.pl.forEach((_,k)=>{const b=$('#b'+k);if(b){b.classList.toggle('act',k==G.t&&!one);b.classList.toggle('off',k!=G.t)}});$('#dec').innerHTML=`<div class="hint">${msg||'افتح أي بوستر'}</div>`}
+function paint(){G.pl.forEach((p,k)=>{p.forEach((x,i)=>{const e=$(`.card[data-k="${k}"][data-i="${i}"]`);if(e){const c='card s'+x.st;if(e.className!==c){e.className=c;e.style.animation='none';e.offsetWidth;e.style.animation=''}}});const t=document.querySelectorAll('.tk')[k];if(t)t.textContent=p.filter(x=>x.st==2).length})}
+function openCard(k,i){const c=G.pl[k],x=c&&c[i];if(!x||G.busy||k!=G.t||x.st||c.some(y=>y.st==1))return;x.st=1;beep(520);paint();$('#dec').innerHTML=`<div class="big">${esc(x.n)}</div><div class="btns"><button class="btn g" data-a="dec" data-t="1">خذها ✔</button><button class="btn r" data-a="dec" data-t="0">خلها ✖</button></div>`}
+async function decide(take){const x=G.pl[G.t].find(y=>y.st==1);if(!x||G.busy)return;G.busy=1;x.st=take?2:3;beep(take?880:200,.15);turnUI(' ');paint();await wait(600);await forced(G.t);advance()}
+async function advance(){if(!$('.boards'))return;const dn=k=>G.pl[k].every(x=>x.st>1);if(G.pl.every((_,k)=>dn(k))){await wait(900);return $('.boards')&&sortScreen()}if(G.pl.length>1&&!dn(1-G.t))G.t=1-G.t;G.busy=0;turnUI()}
+async function forced(k){const c=G.pl[k],tk=c.filter(x=>x.st==2).length,cl=c.filter(x=>!x.st);let t=null;if(tk>=3)t=false;else if(tk+cl.length<=3)t=true;
+if(t!==null)for(const x of cl){if(!$('.boards'))return;turnUI(t?'لازم تاخذ الباقي تلقائي!':'اكتفيت بـ3، الباقي يروح!');await wait(700);x.st=1;paint();beep(520);await wait(900);x.st=t?2:3;paint();beep(t?880:200,.15)}}
+function sortScreen(){setNav(subs,'التالي',next,begin);let d=.2;const row=(a,cl,h)=>`<div class="sortrow ${cl}"><h3 style="color:var(--${cl=='t'?'g':'r'})">${h}</h3><div class="grid">${a.map(x=>card(x,0,'',x.st,0).replace(/animation-delay:[^"]*/,`animation-delay:${(d+=.3).toFixed(2)}s`)).join('')}</div></div>`;
+app.innerHTML=`<h2>النتيجة</h2>`+G.pl.map((p,k)=>{const nm=G.pl.length>1?`اللاعب ${k+1}: `:'';return row(p.filter(x=>x.st==2),'t',`✔ ${nm}اللي أخذها`)+row(p.filter(x=>x.st==3),'l',`✖ ${nm}اللي خلاها`)}).join('')+`<div style="animation:pop .3s steps(3) both;animation-delay:${Math.min(d,5).toFixed(1)}s"><button class="btn y" data-a="next">${G.pl.length>1?'نجمع الاختيارات ▶':'كمّل ▶'}</button></div>`;beep(300,.3)}
+function next(){G.pl.length==1?finalList(G.pl[0].filter(x=>x.st==2)):merge()}
+function merge(){setNav(subs,'تأكيد',()=>ACT.mok(),begin);G.M=new Set();G.mi=G.pl.flatMap(p=>p.filter(x=>x.st==2).map(x=>({...x,st:1})));app.innerHTML=`<h2>اتفقوا على 3 من الـ6</h2><div class="grid" id="grid">${G.mi.map((x,i)=>card(x,i)).join('')}</div><div class="hint" id="hint">اضغطوا على البوسترات اللي تبونها (<span id="mc">0</span>/3)</div><button class="btn g" id="ok" data-a="mok" disabled>تأكيد ✔</button>`}
+function toggleM(i){if(!G.M.has(i)&&G.M.size>=3)return toast('بس 3!');G.M.has(i)?G.M.delete(i):G.M.add(i);beep(600,.05);document.querySelectorAll('#grid .card').forEach((e,j)=>e.classList.toggle('sel',G.M.has(j)));$('#mc').textContent=G.M.size;$('#ok').disabled=G.M.size!=3}
+function finalList(items){setNav(()=>G.pl.length>1?merge():subs(),'كمّلوا: اختيار وحدة',chooseOne,begin);G.fin=items.map(x=>({...x,st:1}));app.innerHTML=`<h2>القائمة النهائية</h2><div class="grid" style="max-width:520px">${G.fin.map((x,i)=>card(x,i,'',1).replace('data-a="card"','')).join('')}</div><div class="btns" style="margin-top:34px"><button class="btn y" data-a="more">كمّلوا: اختيار وحدة ▶</button><button class="btn b" data-a="home">نكتفي ✔</button></div>`;beep(700,.3)}
+function chooseOne(){setNav(()=>finalList(G.fin),'تأكيد الاختيار',()=>G.one>=0?win():toast('اختاروا وحدة'),begin);G.one=-1;app.innerHTML=`<h2>اتفقوا على وحدة فقط</h2><div class="grid" id="grid" style="max-width:520px">${G.fin.map((x,i)=>card(x,i,'',1)).join('')}</div><div style="margin-top:34px"><button class="btn g" id="ok" data-a="win" disabled>هذي اللي نبيها ✔</button></div>`}
+function win(){setNav(chooseOne,'العب مرة ثانية',begin);const x=G.fin[G.one];app.innerHTML=`<h2>الفائز 🏆</h2><div class="win">${card(x,0,'sel',1)}</div><div class="btns"><button class="btn y" data-a="again">العب مرة ثانية</button><button class="btn b" data-a="home">الرئيسية</button></div>`;beep(900,.4);for(let i=0;i<40;i++){const c=document.createElement('div');c.className='cf';c.style.cssText=`left:${Math.random()*100}%;background:${['#ffd93d','#4dc9ff','#ff4d6d','#4cf08a'][i%4]};animation-delay:${Math.random()}s`;document.body.appendChild(c);setTimeout(()=>c.remove(),4000)}}
+
+/* ---------- events ---------- */
+const ACT={
+home,cats,go2(){pick()},next,more:chooseOne,win,again:begin,
+mode(t){G.mode=t.dataset.m;cats()},cat(t){G.c=+t.dataset.i;subs()},sub(t){G.s=+t.dataset.i;begin()},
+card(t){const i=+t.dataset.i,s=$('.grid');if(!s)return;if(G.M){toggleM(i)}else if(G.one!==undefined&&G.fin&&$('#ok')&&$('#ok').dataset.a=='win'){G.one=i;document.querySelectorAll('#grid .card').forEach((e,j)=>e.classList.toggle('sel',j==i));$('#ok').disabled=0;beep(600,.05)}else openCard(+t.dataset.k,i)},
+dec(t){decide(t.dataset.t=='1')},
+mok(){if(!G.M||G.M.size!=3)return toast('اختاروا 3 بوسترات');const a=[...G.M].map(i=>G.mi[i]);G.M=null;finalList(a)},
+};
+app.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.tagName=='INPUT')return;if(t.dataset.a!=='card'&&t.dataset.a!=='dec')G.M=t.dataset.a=='mok'?G.M:null;ACT[t.dataset.a]&&ACT[t.dataset.a](t)});
+home();loadData();
+</script>
+</body>
+</html>

@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-\1\n<meta name="description" content="خذ و خل — لعبة اختيارات بنمط بكسل: خذ 3 من 6 بوسترات مغبشة">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="خذ و خل — لعبة اختيارات بنمط بكسل: خذ 3 من 6 بوسترات مغبشة">
 <title>خذ و خل</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Cairo:wght@600;900&display=swap" rel="stylesheet">
 <style>
@@ -98,6 +99,11 @@ input.s{flex:0 0 56px;text-align:center}
 .bd{padding:10px;border:4px solid transparent;transition:opacity .3s}.bd.act{border-color:var(--y);background:#ffd93d14}.bd.off{opacity:.5;pointer-events:none}
 .tb{display:inline-block;font:900 20px 'Cairo';background:var(--y);color:var(--ink);border:4px solid var(--ink);padding:6px 18px;box-shadow:0 5px 0 var(--ink);animation:pop .3s steps(3)}
 @media(max-width:700px){.boards{grid-template-columns:1fr}.bd .grid{max-width:340px}}
+@keyframes peek{from{transform:translateY(46px) rotate(-14deg)}to{transform:translateY(0) rotate(-14deg)}}
+.pw{position:fixed;right:-18px;bottom:-62px;transform:rotate(-14deg);animation:peek 1s steps(4) infinite alternate;pointer-events:none;z-index:5}
+.pw canvas{image-rendering:pixelated;display:block;filter:drop-shadow(6px 6px 0 #0007);width:250px;height:215px}
+body.home #nav{bottom:auto;top:calc(12px + env(safe-area-inset-top,0px))}
+@media(max-width:600px){.pw{right:-10px;bottom:-40px}.pw canvas{width:150px;height:129px}}
 @media(max-width:520px){.grid{gap:10px}.btn{font-size:17px;padding:14px 18px}}
 </style>
 </head>
@@ -123,7 +129,8 @@ mk('ألعاب','🎮',{'ألعاب تختيم':'God of War|Zelda: BOTW|The Last
 mk('كرة قدم','⚽',{'لاعبين':'ميسي|رونالدو|نيمار|مبابي|هالاند|صلاح|بنزيما|مودريتش|دي بروين|فينيسيوس'}),
 mk('أنمي','🍥',{'شخصيات':'غوكو|لوفي|ناروتو|زورو|لايت|ليفاي|غوجو|إيرين|تانجيرو|إيتشيغو'})];
 let D=DEF();
-async function loadData(){const c=window.KHOZ||{};if(!c.url||!c.key||c.url.includes('YOUR'))return;try{const r=await fetch(c.url+'/rest/v1/categories?select=id,name,icon,sort,subcategories(id,name,sort,items(id,name,image_url))&order=sort',{headers:{apikey:c.key,Authorization:'Bearer '+c.key}});if(!r.ok)return;const d=(await r.json()).map(x=>({id:x.id,n:x.name,i:x.icon,subs:(x.subcategories||[]).sort((a,b)=>a.sort-b.sort).map(y=>({id:y.id,n:y.name,items:(y.items||[]).map(z=>({id:z.id,n:z.name,img:z.image_url}))}))})).filter(x=>x.subs.length);if(d.length)D=d}catch(e){}}
+let ST='demo';
+async function loadData(){const c=window.KHOZ||{};if(!c.url||!c.key||c.url.includes('YOUR'))return;ST='load';D=[];try{const u=new URL(String(c.url).trim()).origin,r=await fetch(u+'/rest/v1/categories?select=id,name,icon,sort,subcategories(id,name,sort,items(id,name,image_url,created_at))&order=sort',{headers:{apikey:c.key}});if(!r.ok)throw 0;D=(await r.json()).map(x=>({id:x.id,n:x.name,i:x.icon,subs:(x.subcategories||[]).sort((a,b)=>a.sort-b.sort).map(y=>({id:y.id,n:y.name,items:(y.items||[]).map(z=>({id:z.id,n:z.name,img:z.image_url}))}))})).filter(x=>x.subs.length);ST='ok'}catch(e){ST='err'}}
 let G={mode:'solo'};
 const hue=s=>Math.abs([...s].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7))%360;
 const art=it=>it.img?`<div class="art"><img src="${it.img}" alt=""></div>`:`<div class="art ph" style="--h:${hue(it.n)}"><b>${esc([...it.n][0]||'?')}</b></div>`;
@@ -135,10 +142,14 @@ let NV={};
 const PX={h:['...##...','..####..','.######.','########','.######.','.##..##.','.##..##.','.##..##.'],b:['...#....','....#...','.....#..','########','########','.....#..','....#...','...#....'],on:['...#....','..##..#.','####.#.#','####.#.#','####.#.#','..##..#.','...#....','........'],off:['...#....','..##....','####.#.#','####..#.','####.#.#','..##....','...#....','........']};
 const px=m=>`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor">${m.map((r,y)=>[...r].map((c,x)=>c=='#'?`<rect x="${x}" y="${y}" width="1" height="1"/>`:'').join('')).join('')}</svg>`;
 function drawNav(full){const n=$('#nav');n.innerHTML=(full?`<button class="nb" data-n="h" aria-label="home">${px(PX.h)}</button><button class="nb" data-n="b" aria-label="back">${px(PX.b)}</button>`:'')+`<button class="nb" data-n="m" aria-label="sound">${px(muted?PX.off:PX.on)}</button>`}
-function setNav(b){NV={b,full:!!b};drawNav(!!b)}
+function setNav(b){NV={b,full:!!b};document.body.classList.toggle('home',!b);drawNav(!!b)}
 $('#nav').addEventListener('click',e=>{const t=e.target.closest('[data-n]');if(!t)return;const k=t.dataset.n;if(k=='m'){muted=!muted;try{localStorage.setItem('khoz_m',muted?1:0)}catch(e){}drawNav(NV.full);return}G.M=null;k=='h'?home():NV.b()});
-function home(){setNav();app.innerHTML=`<div class="sub1">PRESS START</div><h1 class="title">خذ و خل</h1><div class="sub2">TAKE IT OR LEAVE IT</div><div class="btns"><button class="btn g" data-a="mode" data-m="solo">لعب فردي<small>1 PLAYER</small></button><button class="btn r" data-a="mode" data-m="duo">لعب ثنائي<small>2 PLAYERS</small></button></div>`}
-function cats(){setNav(home);app.innerHTML=`<h2>اختر الكاتجوري</h2><div class="list">${D.map((c,i)=>`<button class="tile" data-a="cat" data-i="${i}" style="animation-delay:${i*.07}s"><span class="ic">${esc(c.i)}</span>${esc(c.n)}<small>${c.subs.length} فروع</small></button>`).join('')||'<p>ما فيه كاتجوريات، أضفها من ADMIN</p>'}</div>${back('home')}`}
+const PR=["...........................................", "..............................kk...oooo....", "....ooooo........kk...........kkk.oppppo...", "..oopppoo......okkk.........ooookkppoopo...", "..oppppppo....okkoooo......oppppokpolopo...", "..oppooppo...opkoppppo....oppppppopolopo...", "..opollopoo.oppoppppppopppoookkooopooppo...", "..opollopopooppoookkooopppoyykkyyoppppo....", "..oppooopppppppoyykkyyopppoyyyyyyopppo.....", "...oppppoppppppoyyyyyyoppppoyyyyopooo......", "....opooppppppppoyyyyoppppppooooppppo......", ".....opppppppppppoooopppppppoooooooppo.....", "......opppppppppppppppppppoommmmmmmoopo....", "......oppppppppppppppppoooommmmmmmmmooo....", "......oppppppppppoppppollllommmmmmmolllo...", "......oppppppopppopppolllllloommmoolllllo..", "......opppppppooopppolllllllllooolllllllo..", ".......oppppppppopppollllllllllollllllllo..", "........oppppppppoopollllllllllolllllllo...", ".........ooooopppppooollllllllooolllllo....", ".............opppppppoollllloolllooooo.....", "..............oopppppppooooolllllllo.......", "................oppppppollllllllllo........", ".................oppppppolllllllllo........", ".................opppppoollllllllo.........", ".................oppppo..oolllllo..........", ".................oppppo....ooooo...........", ".................oppppo....................", "..............ooooppppooo..................", ".............oppppopppoppo.................", "............opppppppppppppo................", "...........oppppppppppppppo................", "...........opppppppppoooppo................", "..........opppppppppollopppo...............", ".........opppppoppppollloppo...............", "........opppppoppppolllloppo...............", "........opppppoppppolllloppo..............."],PP={k:'#3c3c3c',o:'#883f5a',p:'#fa9ecf',l:'#f1d5eb',y:'#f5ca2d',m:'#df579f'};
+function drawP(){const c=$('#pc');if(!c)return;c.width=43;c.height=37;const x=c.getContext('2d');PR.forEach((r,y)=>[...r].forEach((ch,i)=>{if(ch!='.'){x.fillStyle=PP[ch];x.fillRect(i,y,1,1)}}))}
+function home(){setNav();app.innerHTML=`<div class="sub1">PRESS START</div><h1 class="title">خذ و خل</h1><div class="sub2">TAKE IT OR LEAVE IT</div><div class="btns"><button class="btn g" data-a="mode" data-m="solo">لعب فردي<small>1 PLAYER</small></button><button class="btn r" data-a="mode" data-m="duo">لعب ثنائي<small>2 PLAYERS</small></button></div><div class="pw"><canvas id="pc"></canvas></div>`;drawP()}
+function cats(){setNav(home);if(ST=='load'){app.innerHTML='<h2>جاري التحميل…</h2>';LP.then(()=>{if(/التحميل/.test(app.textContent))cats()});return}
+if(ST=='err'){app.innerHTML=`<h2>تعذر تحميل البيانات</h2><button class="btn y" data-a="retry">إعادة المحاولة</button>${back('home')}`;return}
+app.innerHTML=`<h2>اختر الكاتجوري</h2><div class="list">${D.map((c,i)=>`<button class="tile" data-a="cat" data-i="${i}" style="animation-delay:${i*.07}s"><span class="ic">${esc(c.i)}</span>${esc(c.n)}<small>${c.subs.length} فروع</small></button>`).join('')||'<p>ما فيه كاتجوريات للحين</p>'}</div>${back('home')}`}
 function subs(){setNav(cats);const c=D[G.c];app.innerHTML=`<h2>${esc(c.i)} ${esc(c.n)}</h2><div class="list">${c.subs.map((s,i)=>`<button class="tile ${s.items.length<6?'dis':''}" data-a="sub" data-i="${i}" style="animation-delay:${i*.07}s">${esc(s.n)}<small>${s.items.length} عنصر</small></button>`).join('')||'<p>ما فيه فروع</p>'}</div>${back('cats')}`}
 function begin(){const sub=D[G.c].subs[G.s];if(sub.items.length<6)return toast('الفرع لازم فيه 6 عناصر على الأقل');const pool=sh(sub.items),n=G.mode==='duo'?2:1;G.pl=[];for(let p=0;p<n;p++){const pick=pool.length>=12&&n==2?pool.slice(p*6,p*6+6):sh(pool).slice(0,6);G.pl.push(pick.map(x=>({...x,st:0,o:n==2?p+1:0})))}G.p=0;pick()}
 function pick(){G.t=0;G.busy=0;setNav(subs,0,0,begin);const one=G.pl.length==1;app.innerHTML=`<div class="turn" id="turn"></div><div class="dec" id="dec"></div><div class="boards ${one?'one':''}">${G.pl.map((p,k)=>`<div class="bd" id="b${k}"><div class="hud"><span>${one?'خذ 3 من 6':'اللاعب '+(k+1)}</span><span>أخذ <b class="tk">0</b>/3</span></div><div class="grid">${p.map((x,i)=>card(x,i,'',0,k)).join('')}</div></div>`).join('')}</div>`;turnUI()}
@@ -160,14 +171,14 @@ function win(){setNav(chooseOne,'العب مرة ثانية',begin);const x=G.fi
 
 /* ---------- events ---------- */
 const ACT={
-home,cats,go2(){pick()},next,more:chooseOne,win,again:begin,
+home,cats,retry(){LP=loadData();cats()},go2(){pick()},next,more:chooseOne,win,again:begin,
 mode(t){G.mode=t.dataset.m;cats()},cat(t){G.c=+t.dataset.i;subs()},sub(t){G.s=+t.dataset.i;begin()},
 card(t){const i=+t.dataset.i,s=$('.grid');if(!s)return;if(G.M){toggleM(i)}else if(G.one!==undefined&&G.fin&&$('#ok')&&$('#ok').dataset.a=='win'){G.one=i;document.querySelectorAll('#grid .card').forEach((e,j)=>e.classList.toggle('sel',j==i));$('#ok').disabled=0;beep(600,.05)}else openCard(+t.dataset.k,i)},
 dec(t){decide(t.dataset.t=='1')},
 mok(){if(!G.M||G.M.size!=3)return toast('اختاروا 3 بوسترات');const a=[...G.M].map(i=>G.mi[i]);G.M=null;finalList(a)},
 };
 app.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.tagName=='INPUT')return;if(t.dataset.a!=='card'&&t.dataset.a!=='dec')G.M=t.dataset.a=='mok'?G.M:null;ACT[t.dataset.a]&&ACT[t.dataset.a](t)});
-home();loadData();
+let LP=loadData();home();
 </script>
 </body>
 </html>

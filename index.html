@@ -99,6 +99,24 @@ input.s{flex:0 0 56px;text-align:center}
 .bd{padding:10px;border:4px solid transparent;transition:opacity .3s}.bd.act{border-color:var(--y);background:#ffd93d14}.bd.off{opacity:.5;pointer-events:none}
 .tb{display:inline-block;font:900 20px 'Cairo';background:var(--y);color:var(--ink);border:4px solid var(--ink);padding:6px 18px;box-shadow:0 5px 0 var(--ink);animation:pop .3s steps(3)}
 @media(max-width:700px){.boards{grid-template-columns:1fr}.bd .grid{max-width:340px}}
+@keyframes rdeal{from{transform:translate(0,-170px) scale(.3) rotate(-35deg);opacity:0}}@keyframes runb{from{filter:blur(16px) saturate(.3)}to{filter:none}}@keyframes rgray{to{filter:grayscale(1) brightness(.6)}}@keyframes rglow{50%{box-shadow:0 0 0 5px var(--g),0 6px 0 3px var(--ink)}}@keyframes rpop{from{transform:scale(2.5);opacity:0}}
+.rs{container-type:inline-size}.rs h2{font-size:22px;margin:0 0 8px;animation:bob 1s steps(2) infinite}
+.agree{background:#ffd93d22;border:3px dashed var(--y);color:var(--y);padding:6px;margin:0 0 10px;font:900 14px Cairo;animation:rpop .4s steps(4) 1.2s both}
+.board{display:grid;gap:10px;--w:96px}.board.solo,.board.duo{grid-template-columns:1fr 1fr}.board.solo{--w:120px}.board.duo{--w:92px}
+.pl{border:3px solid;padding:8px;background:#0b061833}.pl.p1{border-color:var(--b)}.pl.p2{border-color:#fa9ecf}.pl>h4{margin:0 0 6px;font:900 15px Cairo}.p1>h4{color:var(--b)}.p2>h4{color:#fa9ecf}
+.lane{border:3px dashed;padding:6px;margin-bottom:6px;background:#0b061855}.lane.take{border-color:var(--g)}.lane.leave{border-color:var(--r)}
+.lane h3{margin:0 0 6px;font:900 15px Cairo;display:flex;justify-content:space-between}.lane.take h3{color:var(--g)}.lane.leave h3{color:var(--r)}.cnt{font:900 12px 'Press Start 2P'}
+.row{display:flex;gap:8px;justify-content:center}
+.rc{width:var(--w);aspect-ratio:3/4;position:relative;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);cursor:pointer;overflow:hidden;animation:rdeal .5s steps(5) var(--d) both;transition:transform .1s steps(2)}.rc:hover{transform:translateY(-4px) rotate(-2deg)}
+.rc .art-w{animation:runb .5s steps(5) calc(var(--d) + .5s) both}.rc.leave .art-w{animation:runb .5s steps(5) calc(var(--d) + .5s) both,rgray .4s steps(4) calc(var(--d) + 1.2s) forwards}
+.rc.take{border-color:var(--g);box-shadow:0 0 0 3px var(--g),0 6px 0 3px var(--ink);animation:rdeal .5s steps(5) var(--d) both,rglow 1s steps(2) calc(var(--d) + 1.2s) infinite}
+.rc.leave{border-color:var(--r)}.rc.both{border-color:var(--y);box-shadow:0 0 0 3px var(--y),0 6px 0 3px var(--ink)}
+.rc .ph b{font-size:calc(var(--w) * .5)}.rc .nm{font-size:11px;padding:3px 2px;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bd2{position:absolute;top:2px;right:2px;min-width:18px;height:16px;display:grid;place-items:center;padding:0 4px;font:900 10px Cairo;line-height:1;border:2px solid var(--ink);color:var(--ink);animation:rpop .3s steps(3) calc(var(--d) + 1s) both}
+.take .bd2{background:var(--g)}.leave .bd2{background:var(--r)}.both .bd2{background:var(--y)}
+.cta{margin-top:10px;animation:rpop .4s steps(4) var(--cd) both}.btn.sm{font-size:15px;padding:8px 16px}
+.zm{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:97}.zm .rc{--w:min(230px,60vw);animation:rpop .25s steps(3)}.zm .rc .art-w{animation:none}.zm .rc.leave .art-w{filter:grayscale(1) brightness(.7)}.zm .rc .nm{font-size:16px;padding:6px}
+@container (max-width:560px){.board.solo{grid-template-columns:1fr;--w:92px}.board.duo{grid-template-columns:1fr;--w:72px}}
 @keyframes peek{from{transform:translateY(46px) rotate(-14deg)}to{transform:translateY(0) rotate(-14deg)}}
 .pw{position:fixed;right:-18px;bottom:-62px;transform:rotate(-14deg);animation:peek 1s steps(4) infinite alternate;pointer-events:none;z-index:5}
 .pw canvas{image-rendering:pixelated;display:block;filter:drop-shadow(6px 6px 0 #0007);width:250px;height:215px}
@@ -162,8 +180,12 @@ async function decide(take){const x=G.pl[G.t].find(y=>y.st==1);if(!x||G.busy)ret
 async function advance(){if(!$('.boards'))return;const dn=k=>G.pl[k].every(x=>x.st>1);if(G.pl.every((_,k)=>dn(k))){await wait(900);return $('.boards')&&sortScreen()}if(G.pl.length>1&&!dn(1-G.t))G.t=1-G.t;G.busy=0;turnUI()}
 async function forced(k){const c=G.pl[k],tk=c.filter(x=>x.st==2).length,cl=c.filter(x=>!x.st);let t=null;if(tk>=3)t=false;else if(tk+cl.length<=3)t=true;
 if(t!==null)for(const x of cl){if(!$('.boards'))return;turnUI(t?'لازم تاخذ الباقي تلقائي!':'اكتفيت بـ3، الباقي يروح!');await wait(700);x.st=1;paint();beep(520);await wait(900);x.st=t?2:3;paint();beep(t?880:200,.15)}}
-function sortScreen(){setNav(subs,'التالي',next,begin);let d=.2;const row=(a,cl,h)=>`<div class="sortrow ${cl}"><h3 style="color:var(--${cl=='t'?'g':'r'})">${h}</h3><div class="grid">${a.map(x=>card(x,0,'',x.st,0).replace(/animation-delay:[^"]*/,`animation-delay:${(d+=.3).toFixed(2)}s`)).join('')}</div></div>`;
-app.innerHTML=`<h2>النتيجة</h2>`+G.pl.map((p,k)=>{const nm=G.pl.length>1?`اللاعب ${k+1}: `:'';return row(p.filter(x=>x.st==2),'t',`✔ ${nm}اللي أخذها`)+row(p.filter(x=>x.st==3),'l',`✖ ${nm}اللي خلاها`)}).join('')+`<div style="animation:pop .3s steps(3) both;animation-delay:${Math.min(d,5).toFixed(1)}s"><button class="btn y" data-a="next">${G.pl.length>1?'نجمع الاختيارات ▶':'كمّل ▶'}</button></div>`;beep(300,.3)}
+function sortScreen(){setNav(subs);let d=0;const nx=()=>(d+=.2).toFixed(2),P=G.pl,duo=P.length>1,tk=P.map(p=>p.filter(x=>x.st==2)),both=duo?tk[0].filter(x=>x.id&&tk[1].some(y=>y.id===x.id)).map(x=>x.id):[],PS='<svg viewBox="0 0 10 10" width="10" height="10"><polygon points="5,0 6.5,3.5 10,3.8 7.3,6.2 8.1,10 5,8 1.9,10 2.7,6.2 0,3.8 3.5,3.5" fill="#0b0618"/></svg>';
+const rc=(x,k)=>{const b=k=='take'&&both.includes(x.id);return `<div class="rc ${k} ${b?'both':''}" data-a="zoom" style="--d:${nx()}s"><div class="art-w">${art(x)}</div><div class="nm">${esc(x.n)}</div><span class="bd2">${b?PS:k=='take'?'خذ':'خل'}</span></div>`};
+const lane=(a,k,t)=>`<div class="lane ${k}"><h3><span>${t}</span><span class="cnt">${a.length}/3</span></h3><div class="row">${a.map(x=>rc(x,k)).join('')}</div></div>`;
+app.innerHTML=`<div class="rs"><h2>النتيجة</h2>${both.length?`<div class="agree">اتفقتوا على: ${tk[0].filter(x=>both.includes(x.id)).map(x=>esc(x.n)).join('، ')}</div>`:''}<div class="board ${duo?'duo':'solo'}">${P.map((p,k)=>{const l=lane(p.filter(x=>x.st==2),'take',duo?'✔ أخذ':'✔ أخذتها')+lane(p.filter(x=>x.st==3),'leave',duo?'✖ خلى':'✖ خليتها');return duo?`<div class="pl p${k+1}"><h4>اللاعب ${k+1}</h4>${l}</div>`:l}).join('')}</div><div class="cta" style="--cd:${(d+1.4).toFixed(1)}s"><button class="btn y sm" data-a="next">${duo?'نجمع الاختيارات ▶':'كمّل ▶'}</button></div></div>`;
+document.querySelectorAll('.rc').forEach((c,j)=>setTimeout(()=>{if($('.rs'))beep(c.classList.contains('take')?500+j*60:220,.07)},(j+1)*200+500));
+setTimeout(()=>{if(!$('.rs'))return;for(let i=0;i<36;i++){const e=document.createElement('i');e.className='cf';e.style.cssText=`left:${Math.random()*100}%;background:${['#ffd93d','#4cf08a','#4dc9ff','#fa9ecf'][i%4]};animation-delay:${Math.random()*.6}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),3200)}beep(880,.2)},(d+1.2)*1000)}
 function next(){G.pl.length==1?finalList(G.pl[0].filter(x=>x.st==2)):merge()}
 function merge(){setNav(subs,'تأكيد',()=>ACT.mok(),begin);G.M=new Set();G.mi=G.pl.flatMap(p=>p.filter(x=>x.st==2).map(x=>({...x,st:1})));app.innerHTML=`<h2>اتفقوا على 3 من الـ6</h2><div class="grid" id="grid">${G.mi.map((x,i)=>card(x,i)).join('')}</div><div class="hint" id="hint">اضغطوا على البوسترات اللي تبونها (<span id="mc">0</span>/3)</div><button class="btn g" id="ok" data-a="mok" disabled>تأكيد ✔</button>`}
 function toggleM(i){if(!G.M.has(i)&&G.M.size>=3)return toast('بس 3!');G.M.has(i)?G.M.delete(i):G.M.add(i);beep(600,.05);document.querySelectorAll('#grid .card').forEach((e,j)=>e.classList.toggle('sel',G.M.has(j)));$('#mc').textContent=G.M.size;$('#ok').disabled=G.M.size!=3}
@@ -173,7 +195,7 @@ function win(){setNav(chooseOne,'العب مرة ثانية',begin);const x=G.fi
 
 /* ---------- events ---------- */
 const ACT={
-home,cats,retry(){LP=loadData();cats()},go2(){pick()},next,more:chooseOne,win,again:begin,
+home,cats,retry(){LP=loadData();cats()},zoom(t){const z=document.createElement('div');z.className='zm';z.innerHTML=t.outerHTML;z.onclick=()=>z.remove();document.body.appendChild(z)},go2(){pick()},next,more:chooseOne,win,again:begin,
 mode(t){G.mode=t.dataset.m;cats()},cat(t){G.c=+t.dataset.i;subs()},sub(t){G.s=+t.dataset.i;begin()},
 card(t){const i=+t.dataset.i,s=$('.grid');if(!s)return;if(G.M){toggleM(i)}else if(G.one!==undefined&&G.fin&&$('#ok')&&$('#ok').dataset.a=='win'){G.one=i;document.querySelectorAll('#grid .card').forEach((e,j)=>e.classList.toggle('sel',j==i));$('#ok').disabled=0;beep(600,.05)}else openCard(+t.dataset.k,i)},
 dec(t){decide(t.dataset.t=='1')},
